@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_browse">
+
+    <fragment
+        android:id="@+id/nav_browse"
+        android:name="com.example.opentriviadbdemoapp.ui.browse.BrowseFragment"
+        android:label="Browse"
+        tools:layout="@layout/fragment_browse" />
+
+    <fragment
+        android:id="@+id/nav_catalog"
+        android:name="com.example.opentriviadbdemoapp.ui.catalog.CatalogFragment"
+        android:label="Catalog"
+        tools:layout="@layout/fragment_catalog">
+        <action
+            android:id="@+id/action_nav_catalog_to_nav_browse"
+            app:popUpTo="@id/nav_browse" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_quiz"
+        android:name="com.example.opentriviadbdemoapp.ui.quiz.QuizFragment"
+        android:label="Quiz"
+        tools:layout="@layout/fragment_quiz">
+        <action
+            android:id="@+id/action_nav_quiz_to_nav_browse"
+            app:popUpTo="@id/nav_browse" />
+    </fragment>
+
+</navigation>

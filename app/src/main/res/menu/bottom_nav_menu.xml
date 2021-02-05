@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_browse"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/browse" />
+
+    <item
+        android:id="@+id/nav_catalog"
+        android:icon="@drawable/ic_catalog"
+        android:title="@string/catalog" />
+
+    <item
+        android:id="@+id/nav_quiz"
+        android:icon="@drawable/ic_quiz"
+        android:title="@string/quiz" />
+
+</menu>
