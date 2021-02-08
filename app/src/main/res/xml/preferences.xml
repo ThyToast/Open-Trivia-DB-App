@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Appearance">
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_dark_mode"
+            android:summaryOn="Disables dark mode"
+            app:key="dark_mode"
+            app:summaryOff="Enables dark mode"
+            app:title="Dark mode" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

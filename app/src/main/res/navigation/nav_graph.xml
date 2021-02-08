@@ -9,7 +9,11 @@
         android:id="@+id/nav_browse"
         android:name="com.example.opentriviadbdemoapp.ui.browse.BrowseFragment"
         android:label="Browse"
-        tools:layout="@layout/fragment_browse" />
+        tools:layout="@layout/fragment_browse">
+        <action
+            android:id="@+id/action_nav_browse_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_catalog"
@@ -19,6 +23,9 @@
         <action
             android:id="@+id/action_nav_catalog_to_nav_browse"
             app:popUpTo="@id/nav_browse" />
+        <action
+            android:id="@+id/action_nav_catalog_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment
@@ -29,6 +36,25 @@
         <action
             android:id="@+id/action_nav_quiz_to_nav_browse"
             app:popUpTo="@id/nav_browse" />
+        <action
+            android:id="@+id/action_nav_quiz_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.opentriviadbdemoapp.ui.preference.SettingsFragment"
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_nav_browse"
+            app:destination="@id/nav_browse" />
+        <action
+            android:id="@+id/action_settingsFragment_to_nav_quiz"
+            app:destination="@id/nav_quiz" />
+        <action
+            android:id="@+id/action_settingsFragment_to_nav_catalog"
+            app:destination="@id/nav_catalog"
+            app:popUpTo="@id/nav_catalog" />
     </fragment>
 
 </navigation>
