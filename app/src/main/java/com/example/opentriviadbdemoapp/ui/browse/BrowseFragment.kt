@@ -1,21 +1,24 @@
 package com.example.opentriviadbdemoapp.ui.browse
 
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
+import com.example.opentriviadbdemoapp.databinding.FragmentBrowseBinding
+import com.example.opentriviadbdemoapp.ui.adapter.RecyclerAdapter
 
 class BrowseFragment : Fragment() {
+
+    private var fragment: FragmentBrowseBinding? = null
+    private val binding get() = fragment!!
 
     private lateinit var homeViewModel: BrowseViewModel
 
@@ -23,13 +26,18 @@ class BrowseFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         homeViewModel =
             ViewModelProvider(this).get(BrowseViewModel::class.java)
         setHasOptionsMenu(true)
 
-        val root = inflater.inflate(R.layout.fragment_browse, container, false)
-        val dropMenu = root.findViewById<AutoCompleteTextView>(R.id.tv_browse)
+        fragment = FragmentBrowseBinding.inflate(inflater, container, false)
+        val dropMenu = binding.tvBrowse
+        val recyclerView = binding.rvBrowse
+        val recyclerAdapter = RecyclerAdapter()
+        recyclerView.adapter = recyclerAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
 
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
@@ -43,7 +51,7 @@ class BrowseFragment : Fragment() {
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, items)
         dropMenu.setAdapter(adapter)
 
-        return root
+        return binding.root
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -57,5 +65,9 @@ class BrowseFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        fragment = null
 
+    }
 }

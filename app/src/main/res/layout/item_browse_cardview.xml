@@ -11,6 +11,7 @@
         android:padding="16dp">
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"

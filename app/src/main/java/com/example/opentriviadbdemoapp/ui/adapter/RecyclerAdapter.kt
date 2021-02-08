@@ -3,17 +3,20 @@ package com.example.opentriviadbdemoapp.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.opentriviadbdemoapp.databinding.ItemCatalogCardviewBinding
+import com.example.opentriviadbdemoapp.databinding.ItemBrowseCardviewBinding
 
-class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+class RecyclerAdapter(
+    private var list: ArrayList<String> = ArrayList()
 
-    inner class ViewHolder(val binding: ItemCatalogCardviewBinding) :
+) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+
+    inner class ViewHolder(val binding: ItemBrowseCardviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemCatalogCardviewBinding.inflate(
+            ItemBrowseCardviewBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -22,26 +25,18 @@ class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        holder.binding.tvTitle.text = list[position].movieTitle
-//        holder.binding.tvYear.text = list[position].movieYear
-//        Glide.with(holder.itemView.context).load(list[position].moviePoster)
-//            .placeholder(R.mipmap.ic_launcher_round).into(holder.binding.ivImage)
-//
+        holder.binding.tvQuestion.text = list[position]
+        holder.binding.chDifficulty.text = list[position]
+        holder.binding.chType.text = list[position]
+
 //        holder.itemView.setOnClickListener { v ->
 //            v.context as AppCompatActivity
 //        }
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return list.size
     }
-
-
-    //    fun setData(newList: ) {
-//        list = newList.Search as ArrayList<>
-//        notifyDataSetChanged()
-//    }
-//
 
 }
 
