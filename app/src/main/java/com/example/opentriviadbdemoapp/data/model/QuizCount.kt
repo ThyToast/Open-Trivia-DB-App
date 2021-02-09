@@ -4,14 +4,14 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CategoryCountResponse(
+data class QuizCategoryCountResponse(
     @Json(name = "category_id")
     val categoryId: Int,
     @Json(name = "category_question_count")
-    val questionCount: List<CategoryCount>
+    val questionCount: List<QuizCategoryCount>
 )
 
-data class CategoryCount(
+data class QuizCategoryCount(
     @Json(name = "total_question_count")
     val totalQuestion: Int,
     @Json(name = "total_easy_question_count")
