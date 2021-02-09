@@ -8,7 +8,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val viewModelModule: Module = module {
-    viewModel { BrowseViewModel() }
+    viewModel { BrowseViewModel(get()) }
     factory { QuizRepository(get()) }
-    single { RetrofitInstance().createApi() }
+    single { RetrofitInstance()}
 }

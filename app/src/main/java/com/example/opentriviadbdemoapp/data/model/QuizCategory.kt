@@ -9,6 +9,7 @@ data class QuizCategoryListResponse(
     val category: List<QuizCategoryList>
 )
 
+@JsonClass(generateAdapter = true)
 data class QuizCategoryList(
     val id: Int,
     val name: String

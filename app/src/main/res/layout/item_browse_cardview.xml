@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:text="What is the best selling album of all time from 1976 to 2018" />
+            android:text="Sample text" />
 
         <View
             android:layout_width="match_parent"
@@ -31,12 +31,14 @@
                 android:id="@+id/ch_difficulty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:text="Difficulty" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/ch_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:text="Type" />
 
         </com.google.android.material.chip.ChipGroup>

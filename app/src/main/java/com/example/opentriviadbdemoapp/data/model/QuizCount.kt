@@ -11,6 +11,7 @@ data class QuizCategoryCountResponse(
     val questionCount: List<QuizCategoryCount>
 )
 
+@JsonClass(generateAdapter = true)
 data class QuizCategoryCount(
     @Json(name = "total_question_count")
     val totalQuestion: Int,

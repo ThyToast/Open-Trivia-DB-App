@@ -1,13 +1,38 @@
 package com.example.opentriviadbdemoapp.ui.browse
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.opentriviadbdemoapp.data.model.QuizQuestionResponse
+import com.example.opentriviadbdemoapp.data.repository.QuizRepository
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
-class BrowseViewModel : ViewModel() {
+class BrowseViewModel(private val repository: QuizRepository) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    private var viewModelDisposable: CompositeDisposable = CompositeDisposable()
+    val quizQuestionResponse: MutableLiveData<QuizQuestionResponse> = MutableLiveData()
+
+    fun getQuiz(amount: Int, category: Int) {
+        viewModelDisposable.add(repository.getQuiz(amount, category).toObservable()
+            .subscribeOn(Schedulers.io()).subscribe(
+                {
+                    //onSuccess
+                    quizQuestionResponse.postValue(it)
+                    Log.d("getQuiz", "Success")
+
+                }, {
+                    //onFailure
+                    Log.d("getQuiz", "onFailure")
+
+                }
+            ))
     }
-    val text: LiveData<String> = _text
+
+
+    override fun onCleared() {
+        super.onCleared()
+        //stops observables
+        viewModelDisposable.dispose()
+    }
 }
