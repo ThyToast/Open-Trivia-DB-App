@@ -47,7 +47,7 @@ class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
     }
 
 //    override fun getItemViewType(position: Int): Int {
-//        return if (list[position].postType)
+//        return if (list[position].getv)
 //    }
 
     override fun getItemCount(): Int {
