@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -41,8 +42,6 @@ class BrowseFragment : Fragment() {
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
         browseViewModel.getCategory()
-        browseViewModel.getQuiz(10, 9)
-
         browseViewModel.quizQuestionResponse.observe(viewLifecycleOwner, { response ->
             recyclerAdapter.setData(response.responseResult)
         })
@@ -62,6 +61,10 @@ class BrowseFragment : Fragment() {
         }
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
         dropMenu.setAdapter(adapter)
+        dropMenu.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i: Int, l: Long ->
+            val value = adapterView.getItemIdAtPosition(i + 9)
+            browseViewModel.getQuiz(10, value.toInt())
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
