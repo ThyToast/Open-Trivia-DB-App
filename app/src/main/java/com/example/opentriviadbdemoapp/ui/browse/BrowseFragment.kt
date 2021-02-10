@@ -15,6 +15,7 @@ import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentBrowseBinding
 import com.example.opentriviadbdemoapp.ui.adapter.RecyclerAdapter
 import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
+import com.example.opentriviadbdemoapp.utils.Constant.Companion.BASE_POSITION
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -62,7 +63,7 @@ class BrowseFragment : Fragment() {
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
         dropMenu.setAdapter(adapter)
         dropMenu.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i: Int, l: Long ->
-            val value = adapterView.getItemIdAtPosition(i + 9)
+            val value = adapterView.getItemIdAtPosition(i + BASE_POSITION)
             browseViewModel.getQuiz(10, value.toInt())
         }
     }
