@@ -14,15 +14,12 @@ import com.example.opentriviadbdemoapp.R
 
 class QuizFragment : Fragment() {
 
-    private lateinit var notificationsViewModel: QuizViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        notificationsViewModel =
-            ViewModelProvider(this).get(QuizViewModel::class.java)
         setHasOptionsMenu(true)
 
         val root = inflater.inflate(R.layout.fragment_quiz, container, false)
