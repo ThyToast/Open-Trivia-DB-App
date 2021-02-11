@@ -24,5 +24,7 @@ data class QuizQuestion(
     @Json(name = "correct_answer")
     val quizCorrectAnswer: String,
     @Json(name = "incorrect_answers")
-    val quizWrongAnswer: List<String>
+    val quizWrongAnswer: List<String>,
+
+    val viewType:Int = 0
 )

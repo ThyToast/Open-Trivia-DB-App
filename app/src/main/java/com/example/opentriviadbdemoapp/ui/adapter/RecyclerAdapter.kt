@@ -7,9 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.databinding.ItemBrowseCardviewBinding
 
-private const val ITEM_TYPE_BROWSE = 0
-private const val ITEM_TYPE_CATALOG = 1
-
 class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     private var list = emptyList<QuizQuestion>()
@@ -46,9 +43,6 @@ class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-//    override fun getItemViewType(position: Int): Int {
-//        return if (list[position].getv)
-//    }
 
     override fun getItemCount(): Int {
         return list.size

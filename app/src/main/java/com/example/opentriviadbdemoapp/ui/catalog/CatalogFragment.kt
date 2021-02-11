@@ -6,26 +6,40 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
+import com.example.opentriviadbdemoapp.databinding.FragmentCatalogBinding
+import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
 
 class CatalogFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: CatalogViewModel
+    private var fragment: FragmentCatalogBinding? = null
+    private val binding get() = fragment!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        dashboardViewModel =
-            ViewModelProvider(this).get(CatalogViewModel::class.java)
+    ): View {
         setHasOptionsMenu(true)
 
-        val root = inflater.inflate(R.layout.fragment_catalog, container, false)
+        fragment = FragmentCatalogBinding.inflate(inflater, container, false)
+        val recyclerView = binding.rvCatalog
+        val recyclerAdapter = BaseRecyclerAdapter()
+        recyclerView.adapter = recyclerAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        return root
+
+
+
+
+
+
+
+
+
+        return binding.root
     }
 
 
@@ -38,5 +52,11 @@ class CatalogFragment : Fragment() {
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fragment = null
+
     }
 }

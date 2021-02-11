@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentBrowseBinding
+import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
 import com.example.opentriviadbdemoapp.ui.adapter.RecyclerAdapter
 import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
 import com.example.opentriviadbdemoapp.utils.Constant.Companion.BASE_POSITION
@@ -36,7 +37,7 @@ class BrowseFragment : Fragment() {
 
         fragment = FragmentBrowseBinding.inflate(inflater, container, false)
         val recyclerView = binding.rvBrowse
-        val recyclerAdapter = RecyclerAdapter()
+        val recyclerAdapter = BaseRecyclerAdapter()
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
