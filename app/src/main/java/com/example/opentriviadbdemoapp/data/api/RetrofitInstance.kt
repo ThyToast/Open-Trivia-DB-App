@@ -14,7 +14,7 @@ class RetrofitInstance {
     private val adapterFactory =
         retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory.create()
 
-    fun createRetrofit(): Retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+    private fun createRetrofit(): Retrofit = Retrofit.Builder().baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
         .client(okHttpClient.build())
         .addCallAdapterFactory(adapterFactory)

@@ -8,7 +8,7 @@ data class QuizCategoryCountResponse(
     @Json(name = "category_id")
     val categoryId: Int,
     @Json(name = "category_question_count")
-    val questionCount: List<QuizCategoryCount>
+    val categoryCount: QuizCategoryCount
 )
 
 @JsonClass(generateAdapter = true)

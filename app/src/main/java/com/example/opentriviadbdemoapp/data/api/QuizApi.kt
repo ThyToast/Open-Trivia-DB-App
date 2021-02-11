@@ -3,7 +3,6 @@ package com.example.opentriviadbdemoapp.data.api
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryCountResponse
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryListResponse
 import com.example.opentriviadbdemoapp.data.model.QuizQuestionResponse
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

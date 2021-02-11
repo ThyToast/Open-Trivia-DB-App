@@ -29,6 +29,7 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class CatalogViewHolder(binding: ItemCatalogCardviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        val tvCatalogCategory = binding.tvCatalogCategory
         val tvCategoryEasy = binding.tvCatalogCategoryEasy
         val tvCategoryMedium = binding.tvCatalogCategoryMedium
         val tvCategoryHard = binding.tvCatalogCategoryHard
@@ -74,6 +75,8 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         } else if (holder is CatalogViewHolder && item is QuizCategoryCount) {
             val resources = holder.itemView.context.resources
 
+            holder.tvCatalogCategory.text = "Temp category"
+
             holder.tvCategoryEasy.text =
                 resources.getString(R.string.easy, item.easyQuestion)
 
@@ -84,6 +87,7 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 resources.getString(R.string.hard, item.hardQuestion)
 
             holder.tvTotal.text = item.totalQuestion.toString()
+
 
         }
     }

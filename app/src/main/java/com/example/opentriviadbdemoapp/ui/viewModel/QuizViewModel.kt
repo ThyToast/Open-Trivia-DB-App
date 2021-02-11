@@ -49,17 +49,18 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
     }
 
     fun getCount(category: Int) {
-        viewModelDisposable.add(
-            repository.getCount(category).toObservable().subscribeOn(Schedulers.io()).subscribe(
+        viewModelDisposable.add(repository.getCount(category).toObservable()
+            .subscribeOn(Schedulers.io()).subscribe(
                 {
                     //onSuccess
                     quizCategoryCountResponse.postValue(it)
                     Log.d("getCount", "Success")
+
                 }, {
-                    Log.d("getCount", "Failure")
+                    //onFailure
+                    Log.d("getCount", "onFailure")
                 }
-            )
-        )
+            ))
     }
 
 

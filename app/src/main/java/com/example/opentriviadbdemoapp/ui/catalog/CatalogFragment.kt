@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryCount
 import com.example.opentriviadbdemoapp.databinding.FragmentCatalogBinding
 import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
 import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
@@ -37,11 +36,8 @@ class CatalogFragment : Fragment() {
         CatalogViewModel.getCount(9)
 
         CatalogViewModel.quizCategoryCountResponse.observe(viewLifecycleOwner, { response ->
-            recyclerAdapter.setData(listOf(QuizCategoryCount(1, 2, 3, 4)))
-
+            recyclerAdapter.setData(listOf(response.categoryCount))
         })
-
-
 
         return binding.root
     }
