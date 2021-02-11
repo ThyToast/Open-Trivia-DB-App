@@ -9,7 +9,6 @@ import com.example.opentriviadbdemoapp.data.model.QuizCategoryCount
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.databinding.ItemBrowseCardviewBinding
 import com.example.opentriviadbdemoapp.databinding.ItemCatalogCardviewBinding
-import com.example.opentriviadbdemoapp.resources
 
 
 class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -73,15 +72,16 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             holder.chType.text = item.quizType
 
         } else if (holder is CatalogViewHolder && item is QuizCategoryCount) {
+            val resources = holder.itemView.context.resources
 
             holder.tvCategoryEasy.text =
-                resources?.getString(R.string.easy, item.easyQuestion) ?: ""
+                resources.getString(R.string.easy, item.easyQuestion)
 
             holder.tvCategoryMedium.text =
-                resources?.getString(R.string.medium, item.mediumQuestion) ?: ""
+                resources.getString(R.string.medium, item.mediumQuestion)
 
             holder.tvCategoryHard.text =
-                resources?.getString(R.string.hard, item.hardQuestion) ?: ""
+                resources.getString(R.string.hard, item.hardQuestion)
 
             holder.tvTotal.text = item.totalQuestion.toString()
 

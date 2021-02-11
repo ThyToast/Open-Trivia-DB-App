@@ -21,6 +21,4 @@ data class QuizCategoryCount(
     val mediumQuestion: Int,
     @Json(name = "total_hard_question_count")
     val hardQuestion: Int,
-
-    val viewType:Int = 1
 )
