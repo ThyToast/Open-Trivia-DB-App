@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,15 +32,29 @@ class CatalogFragment : Fragment() {
         fragment = FragmentCatalogBinding.inflate(inflater, container, false)
         val recyclerView = binding.rvCatalog
         val recyclerAdapter = BaseRecyclerAdapter()
+
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        catalogViewModel.getCount(9)
+
+        catalogViewModel.getCategory()
+
+        catalogViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
+            setListData(response.category)
+        })
 
         catalogViewModel.quizCategoryCountResponse.observe(viewLifecycleOwner, { response ->
             recyclerAdapter.setData(response)
         })
 
         return binding.root
+    }
+
+    private fun setListData(items: List<QuizCategoryList>) {
+        val idList = mutableListOf<Int>()
+        for (i in items.indices) {
+            idList.add(items[i].id)
+        }
+        catalogViewModel.getCount(idList)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

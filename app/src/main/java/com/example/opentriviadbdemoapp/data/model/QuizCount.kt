@@ -22,3 +22,9 @@ data class QuizCategoryCount(
     @Json(name = "total_hard_question_count")
     val hardQuestion: Int,
 )
+
+data class QuizCategoryComposite(
+    val categoryId: Int,
+    val categoryName: String,
+    val categoryCount: QuizCategoryCount
+    )

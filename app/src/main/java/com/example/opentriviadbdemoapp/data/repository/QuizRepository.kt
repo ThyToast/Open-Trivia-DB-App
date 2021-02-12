@@ -5,6 +5,7 @@ import com.example.opentriviadbdemoapp.data.model.QuizCategoryCountResponse
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryListResponse
 import com.example.opentriviadbdemoapp.data.model.QuizQuestionResponse
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 class QuizRepository(private val retrofitInstance: RetrofitInstance) {
@@ -12,7 +13,7 @@ class QuizRepository(private val retrofitInstance: RetrofitInstance) {
         return retrofitInstance.createApi().getQuizCategory()
     }
 
-    fun getCount(category: Int): Single<QuizCategoryCountResponse> {
+    fun getCount(category: Int): Flowable<QuizCategoryCountResponse> {
         return retrofitInstance.createApi().getQuizCount(category)
     }
 

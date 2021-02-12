@@ -7,8 +7,10 @@ import com.example.opentriviadbdemoapp.data.model.QuizCategoryCountResponse
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryListResponse
 import com.example.opentriviadbdemoapp.data.model.QuizQuestionResponse
 import com.example.opentriviadbdemoapp.data.repository.QuizRepository
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
 
@@ -55,39 +57,26 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
         )
     }
 
-    fun getCount(category: Int) {
-        viewModelDisposable.add(repository.getCount(category)
-            .toObservable().toList()
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    //onSuccess
-                    quizCategoryCountResponse.postValue(it)
-                    Log.d("getCount", "Success")
+    fun getCount(category: List<Int>) {
+        viewModelDisposable.add(
+            Observable.fromIterable(category).flatMap { result ->
+                repository.getCount(result).toObservable()
+            }
+                .debounce(50, TimeUnit.MILLISECONDS)
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        //onSuccess
+                        quizCategoryCountResponse.postValue(it)
+                        Log.d("getCount", "Success")
 
-                }, {
-                    //onFailure
-                    Log.d("getCount", "onFailure")
-                }
-            )
+                    }, {
+                        //onFailure
+                        Log.d("getCount", "onFailure")
+                    }
+                )
         )
-    }
-
-    fun getCount2(category: Int) {
-        repository.getCount(category)
-            .toObservable().toList()
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    //onSuccess
-                    quizCategoryCountResponse.postValue(it)
-                    Log.d("getCount", "Success")
-
-                }, {
-                    //onFailure
-                    Log.d("getCount", "onFailure")
-                }
-            )
     }
 
 
