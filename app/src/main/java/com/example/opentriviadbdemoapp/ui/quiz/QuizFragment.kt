@@ -6,38 +6,38 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.opentriviadbdemoapp.R
+import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
+import com.example.opentriviadbdemoapp.databinding.FragmentQuizBinding
+import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class QuizFragment : Fragment() {
 
+    private var fragment: FragmentQuizBinding? = null
+    private val binding get() = fragment!!
+
+    private val QuizViewModel: QuizViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View{
         setHasOptionsMenu(true)
-
-        val root = inflater.inflate(R.layout.fragment_quiz, container, false)
-        val dropMenu = root.findViewById<AutoCompleteTextView>(R.id.tv_quiz)
-
+        fragment = FragmentQuizBinding.inflate(inflater, container, false)
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
-        val items = listOf(
-            "General Knowledge",
-            "Entertainment: Books",
-            "Entertainment: Film",
-            "Entertainment: Music"
-        )
-        val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, items)
-        dropMenu.setAdapter(adapter)
+        QuizViewModel.getCategory()
+        QuizViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
+            setDropMenuData(response.category)
+        })
 
-        return root
+
+        return binding.root
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -50,5 +50,21 @@ class QuizFragment : Fragment() {
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun setDropMenuData(items: List<QuizCategoryList>) {
+        val dropMenu = binding.tvQuiz
+        val menuList = mutableListOf<String>()
+        for (i in items.indices) {
+            menuList.add(items[i].name)
+        }
+        val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
+        dropMenu.setAdapter(adapter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fragment = null
+
     }
 }

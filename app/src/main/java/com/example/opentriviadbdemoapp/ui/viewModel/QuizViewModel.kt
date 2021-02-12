@@ -13,14 +13,18 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
 
     private var viewModelDisposable: CompositeDisposable = CompositeDisposable()
+
     val quizQuestionResponse: MutableLiveData<QuizQuestionResponse> = MutableLiveData()
     val quizCategoryResponse: MutableLiveData<QuizCategoryListResponse> = MutableLiveData()
-    val quizCategoryCountResponse: MutableLiveData<QuizCategoryCountResponse> = MutableLiveData()
+    val quizCategoryCountResponse: MutableLiveData<MutableList<QuizCategoryCountResponse>> =
+        MutableLiveData()
 
 
     fun getQuiz(amount: Int, category: Int) {
-        viewModelDisposable.add(repository.getQuiz(amount, category).toObservable()
-            .subscribeOn(Schedulers.io()).subscribe(
+        viewModelDisposable.add(repository.getQuiz(amount, category)
+            .toObservable()
+            .subscribeOn(Schedulers.io())
+            .subscribe(
                 {
                     //onSuccess
                     quizQuestionResponse.postValue(it)
@@ -36,21 +40,26 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
 
     fun getCategory() {
         viewModelDisposable.add(
-            repository.getCategory().toObservable().subscribeOn(Schedulers.io()).subscribe(
-                {
-                    //onSuccess
-                    quizCategoryResponse.postValue(it)
-                    Log.d("getCategory", "Success")
-                }, {
-                    Log.d("getCategory", "Failure")
-                }
-            )
+            repository.getCategory()
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        //onSuccess
+                        quizCategoryResponse.postValue(it)
+                        Log.d("getCategory", "Success")
+                    }, {
+                        Log.d("getCategory", "Failure")
+                    }
+                )
         )
     }
 
     fun getCount(category: Int) {
-        viewModelDisposable.add(repository.getCount(category).toObservable()
-            .subscribeOn(Schedulers.io()).subscribe(
+        viewModelDisposable.add(repository.getCount(category)
+            .toObservable().toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe(
                 {
                     //onSuccess
                     quizCategoryCountResponse.postValue(it)
@@ -60,7 +69,25 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
                     //onFailure
                     Log.d("getCount", "onFailure")
                 }
-            ))
+            )
+        )
+    }
+
+    fun getCount2(category: Int) {
+        repository.getCount(category)
+            .toObservable().toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    //onSuccess
+                    quizCategoryCountResponse.postValue(it)
+                    Log.d("getCount", "Success")
+
+                }, {
+                    //onFailure
+                    Log.d("getCount", "onFailure")
+                }
+            )
     }
 
 
@@ -68,5 +95,6 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
         super.onCleared()
         //stops observables
         viewModelDisposable.dispose()
+        Log.d("onCleared", "cleared")
     }
 }

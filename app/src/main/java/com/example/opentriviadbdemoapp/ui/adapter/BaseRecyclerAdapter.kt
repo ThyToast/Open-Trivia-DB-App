@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.opentriviadbdemoapp.R
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryCount
+import com.example.opentriviadbdemoapp.data.model.QuizCategoryCountResponse
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.databinding.ItemBrowseCardviewBinding
 import com.example.opentriviadbdemoapp.databinding.ItemCatalogCardviewBinding
@@ -34,7 +34,6 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val tvCategoryMedium = binding.tvCatalogCategoryMedium
         val tvCategoryHard = binding.tvCatalogCategoryHard
         val tvTotal = binding.tvCatalogTotal
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -72,22 +71,22 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             holder.chDifficulty.text = item.quizDifficulty
             holder.chType.text = item.quizType
 
-        } else if (holder is CatalogViewHolder && item is QuizCategoryCount) {
+        } else if (holder is CatalogViewHolder && item is QuizCategoryCountResponse) {
             val resources = holder.itemView.context.resources
+            val categoryCount = item.categoryCount
 
-            holder.tvCatalogCategory.text = "Temp category"
+            holder.tvCatalogCategory.text = item.categoryId.toString()
 
             holder.tvCategoryEasy.text =
-                resources.getString(R.string.easy, item.easyQuestion)
+                resources.getString(R.string.easy, categoryCount.easyQuestion)
 
             holder.tvCategoryMedium.text =
-                resources.getString(R.string.medium, item.mediumQuestion)
+                resources.getString(R.string.medium, categoryCount.mediumQuestion)
 
             holder.tvCategoryHard.text =
-                resources.getString(R.string.hard, item.hardQuestion)
+                resources.getString(R.string.hard, categoryCount.hardQuestion)
 
-            holder.tvTotal.text = item.totalQuestion.toString()
-
+            holder.tvTotal.text = categoryCount.totalQuestion.toString()
 
         }
     }
@@ -110,6 +109,8 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
 }
+
+//TODO(when implementing pagination, use try/catch to prevent crashing from timeout exception https://stackoverflow.com/questions/36455656/java-net-sockettimeoutexception-timeout)
 
 
 

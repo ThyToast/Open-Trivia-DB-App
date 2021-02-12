@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
+import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentCatalogBinding
 import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
 import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
@@ -19,7 +22,7 @@ class CatalogFragment : Fragment() {
     private var fragment: FragmentCatalogBinding? = null
     private val binding get() = fragment!!
 
-    private val CatalogViewModel: QuizViewModel by viewModel()
+    private val catalogViewModel: QuizViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,15 +36,14 @@ class CatalogFragment : Fragment() {
         val recyclerAdapter = BaseRecyclerAdapter()
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        CatalogViewModel.getCount(9)
+        catalogViewModel.getCount(9)
 
-        CatalogViewModel.quizCategoryCountResponse.observe(viewLifecycleOwner, { response ->
-            recyclerAdapter.setData(listOf(response.categoryCount))
+        catalogViewModel.quizCategoryCountResponse.observe(viewLifecycleOwner, { response ->
+            recyclerAdapter.setData(response)
         })
 
         return binding.root
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.btn_settings -> {
