@@ -25,4 +25,4 @@ data class QuizQuestion(
     val quizCorrectAnswer: String,
     @Json(name = "incorrect_answers")
     val quizWrongAnswer: List<String>,
-    )
+)

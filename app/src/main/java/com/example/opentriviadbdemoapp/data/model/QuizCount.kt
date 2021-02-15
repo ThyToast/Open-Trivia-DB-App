@@ -24,7 +24,7 @@ data class QuizCategoryCount(
 )
 
 data class QuizCategoryComposite(
-    val categoryId: Int,
     val categoryName: String,
+    val categoryId: Int,
     val categoryCount: QuizCategoryCount
-    )
+)

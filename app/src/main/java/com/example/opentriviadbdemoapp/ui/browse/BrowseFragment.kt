@@ -57,12 +57,12 @@ class BrowseFragment : Fragment() {
         val dropMenu = binding.tvBrowse
         val menuList = mutableListOf<String>()
         for (i in items.indices) {
-            menuList.add(items[i].name)
+            menuList.add(items[i].categoryName)
         }
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
         dropMenu.setAdapter(adapter)
         dropMenu.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i: Int, l: Long ->
-            browseViewModel.getQuiz(10, items[i].id)
+            browseViewModel.getQuiz(10, items[i].categoryId)
         }
     }
 

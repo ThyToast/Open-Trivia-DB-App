@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.opentriviadbdemoapp.R
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryCountResponse
+import com.example.opentriviadbdemoapp.data.model.QuizCategoryComposite
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.databinding.ItemBrowseCardviewBinding
 import com.example.opentriviadbdemoapp.databinding.ItemCatalogCardviewBinding
@@ -71,11 +71,11 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             holder.chDifficulty.text = item.quizDifficulty
             holder.chType.text = item.quizType
 
-        } else if (holder is CatalogViewHolder && item is QuizCategoryCountResponse) {
+        } else if (holder is CatalogViewHolder && item is QuizCategoryComposite) {
             val resources = holder.itemView.context.resources
             val categoryCount = item.categoryCount
 
-            holder.tvCatalogCategory.text = item.categoryId.toString()
+            holder.tvCatalogCategory.text = item.categoryName
 
             holder.tvCategoryEasy.text =
                 resources.getString(R.string.easy, categoryCount.easyQuestion)

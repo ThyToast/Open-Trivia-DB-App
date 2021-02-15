@@ -1,6 +1,7 @@
 package com.example.opentriviadbdemoapp.data.api
 
 import com.example.opentriviadbdemoapp.utils.Constant.Companion.BASE_URL
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,11 +16,11 @@ class RetrofitInstance {
     private val okHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(interceptor)
-            .connectTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
 
 
     private val adapterFactory =
-        retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory.create()
+        retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io())
 
     private fun createRetrofit(): Retrofit = Retrofit.Builder().baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentCatalogBinding
 import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
 import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
@@ -36,26 +35,15 @@ class CatalogFragment : Fragment() {
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        catalogViewModel.getCategory()
+        catalogViewModel.getCategoryCount()
 
-        catalogViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
-            setListData(response.category)
-        })
-
-        catalogViewModel.quizCategoryCountResponse.observe(viewLifecycleOwner, { response ->
+        catalogViewModel.quizCategoryComposite.observe(viewLifecycleOwner, { response ->
             recyclerAdapter.setData(response)
         })
 
         return binding.root
     }
 
-    private fun setListData(items: List<QuizCategoryList>) {
-        val idList = mutableListOf<Int>()
-        for (i in items.indices) {
-            idList.add(items[i].id)
-        }
-        catalogViewModel.getCount(idList)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.btn_settings -> {

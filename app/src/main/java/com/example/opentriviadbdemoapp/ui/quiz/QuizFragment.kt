@@ -25,7 +25,7 @@ class QuizFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         setHasOptionsMenu(true)
         fragment = FragmentQuizBinding.inflate(inflater, container, false)
 
@@ -43,7 +43,6 @@ class QuizFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.btn_settings -> {
             findNavController().navigate(R.id.action_nav_quiz_to_settingsFragment)
-
             true
         }
 
@@ -56,7 +55,7 @@ class QuizFragment : Fragment() {
         val dropMenu = binding.tvQuiz
         val menuList = mutableListOf<String>()
         for (i in items.indices) {
-            menuList.add(items[i].name)
+            menuList.add(items[i].categoryName)
         }
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
         dropMenu.setAdapter(adapter)

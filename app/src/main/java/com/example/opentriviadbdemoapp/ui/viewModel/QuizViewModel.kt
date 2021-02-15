@@ -3,14 +3,11 @@ package com.example.opentriviadbdemoapp.ui.viewModel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryCountResponse
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryListResponse
-import com.example.opentriviadbdemoapp.data.model.QuizQuestionResponse
+import com.example.opentriviadbdemoapp.data.model.*
 import com.example.opentriviadbdemoapp.data.repository.QuizRepository
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
 
@@ -19,6 +16,8 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
     val quizQuestionResponse: MutableLiveData<QuizQuestionResponse> = MutableLiveData()
     val quizCategoryResponse: MutableLiveData<QuizCategoryListResponse> = MutableLiveData()
     val quizCategoryCountResponse: MutableLiveData<MutableList<QuizCategoryCountResponse>> =
+        MutableLiveData()
+    val quizCategoryComposite: MutableLiveData<List<QuizCategoryComposite>> =
         MutableLiveData()
 
 
@@ -57,26 +56,53 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
         )
     }
 
-    fun getCount(category: List<Int>) {
-        viewModelDisposable.add(
-            Observable.fromIterable(category).flatMap { result ->
+
+    fun getCategoryCount() {
+        val nameList = mutableListOf<String>()
+        val idList = mutableListOf<Int>()
+        var categoryList = QuizCategoryListResponse(mutableListOf())
+
+        //figure out a way to get idList from QuizCategoryListResponse
+        //figure out a way to get the names to cross reference with categoryCount's ID
+
+        repository.getCategory().toObservable().flatMap { categoryListResponse ->
+            categoryList = categoryListResponse
+
+            for (i in categoryListResponse.category.indices) {
+                idList.add(categoryListResponse.category[i].categoryId)
+            }
+
+            for (i in categoryListResponse.category.indices) {
+                nameList.add(categoryListResponse.category[i].categoryName)
+            }
+
+            Observable.fromIterable(idList).flatMap { result ->
                 repository.getCount(result).toObservable()
             }
-                .debounce(50, TimeUnit.MILLISECONDS)
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        //onSuccess
-                        quizCategoryCountResponse.postValue(it)
-                        Log.d("getCount", "Success")
+        }
+            .toList()
+            .subscribeOn(Schedulers.io())
+            .subscribe({ categoryNameList ->
 
-                    }, {
-                        //onFailure
-                        Log.d("getCount", "onFailure")
-                    }
-                )
-        )
+                val categoryById: Map<Int, QuizCategoryList> =
+                    categoryList.category.associateBy { it.categoryId }
+
+                val merge = categoryNameList.filter {
+                    categoryById[it.categoryId] != null
+                }.map { categoryCount ->
+                    QuizCategoryComposite(
+                        categoryById[categoryCount.categoryId]!!.categoryName,
+                        categoryCount.categoryId,
+                        categoryCount.categoryCount
+                    )
+                }
+                quizCategoryComposite.postValue(merge.sortedBy {
+                    it.categoryId
+                })
+
+            }, {
+                Log.d("getCategoryCount", "onFailure")
+            })
     }
 
 
