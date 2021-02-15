@@ -58,99 +58,49 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
 
 
     fun getCategoryCount() {
-        val nameList = mutableListOf<String>()
-        val idList = mutableListOf<Int>()
         var categoryList = QuizCategoryListResponse(mutableListOf())
+        val idList = mutableListOf<Int>()
 
-        repository.getCategory().toObservable().flatMap { categoryListResponse ->
-            categoryList = categoryListResponse
+        viewModelDisposable.add(
+            repository.getCategory().toObservable().flatMap { categoryListResponse ->
+                categoryList = categoryListResponse
 
-            for (i in categoryListResponse.category.indices) {
-                idList.add(categoryListResponse.category[i].categoryId)
-            }
-
-            for (i in categoryListResponse.category.indices) {
-                nameList.add(categoryListResponse.category[i].categoryName)
-            }
-
-            Observable.fromIterable(idList).flatMap { result ->
-                repository.getCount(result).toObservable()
-            }
-        }
-            .toList()
-            .subscribeOn(Schedulers.io())
-            .subscribe({ categoryNameList ->
-
-                val categoryById: Map<Int, QuizCategoryList> =
-                    categoryList.category.associateBy { it.categoryId }
-
-                //creates a new composite class combining the mapped categoryList and categoryCount ID and category count
-                val merge = categoryNameList.filter {
-                    categoryById[it.categoryId] != null
-                }.map { categoryCount ->
-                    categoryById[categoryCount.categoryId]?.let {
-                        QuizCategoryComposite(
-                            it.categoryName,
-                            categoryCount.categoryId,
-                            categoryCount.categoryCount
-                        )
-                    }
+                for (i in categoryListResponse.category.indices) {
+                    idList.add(categoryListResponse.category[i].categoryId)
                 }
-                quizCategoryComposite.postValue(merge.filterNotNull().sortedBy {
-                    it.categoryId
+
+                Observable.fromIterable(idList.sorted()).flatMap { result ->
+                    repository.getCount(result).toObservable()
+                }
+            }
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .subscribe({ categoryNameList ->
+
+                    val categoryById: Map<Int, QuizCategoryList> =
+                        categoryList.category.associateBy { it.categoryId }
+
+                    //creates a new composite class combining the mapped categoryList and categoryCount ID and category count
+                    val merge = categoryNameList.filter {
+                        categoryById[it.categoryId] != null
+                    }.map { categoryCount ->
+                        categoryById[categoryCount.categoryId]?.let {
+                            QuizCategoryComposite(
+                                it.categoryName,
+                                categoryCount.categoryId,
+                                categoryCount.categoryCount
+                            )
+                        }
+                    }
+                    quizCategoryComposite.postValue(merge.filterNotNull().sortedBy {
+                        it.categoryId
+                    })
+
+                }, {
+                    Log.d("getCategoryCount", "onFailure")
                 })
-
-            }, {
-                Log.d("getCategoryCount", "onFailure")
-            })
+        )
     }
-
-//    fun getCategoryCountNullable() {
-//        val nameList = mutableListOf<String>()
-//        val idList = mutableListOf<Int>()
-//        var categoryList = QuizCategoryListResponse(mutableListOf())
-//
-//        repository.getCategory().toObservable().flatMap { categoryListResponse ->
-//            categoryList = categoryListResponse
-//
-//            for (i in categoryListResponse.category.indices) {
-//                idList.add(categoryListResponse.category[i].categoryId)
-//            }
-//
-//            for (i in categoryListResponse.category.indices) {
-//                nameList.add(categoryListResponse.category[i].categoryName)
-//            }
-//
-//            Observable.fromIterable(idList).flatMap { result ->
-//                repository.getCount(result).toObservable()
-//            }
-//        }
-//            .toList()
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({ categoryNameList ->
-//
-//                val categoryById: Map<Int, QuizCategoryList> =
-//                    categoryList.category.associateBy { it.categoryId }
-//
-//
-//                //creates a new composite class combining the mapped categoryList and categoryCount ID and category count
-//                val merge = categoryNameList.filter {
-//                    categoryById[it.categoryId] != null
-//                }.map { categoryCount ->
-//                    QuizCategoryComposite(
-//                        categoryById[categoryCount.categoryId]!!.categoryName,
-//                        categoryCount.categoryId,
-//                        categoryCount.categoryCount
-//                    )
-//                }
-//                quizCategoryComposite.postValue(merge.sortedBy {
-//                    it.categoryId
-//                })
-//
-//            }, {
-//                Log.d("getCategoryCount", "onFailure")
-//            })
-//    }
 
 
     override fun onCleared() {
