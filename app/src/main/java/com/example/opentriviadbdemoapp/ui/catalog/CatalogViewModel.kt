@@ -21,6 +21,7 @@ class CatalogViewModel(private val repository: QuizRepository) : ViewModel() {
         repository.getCategory().toObservable().subscribeOn(Schedulers.io())
             .flatMap { quizCategoryList -> Observable.just(quizCategoryList.category) }
             .subscribe({
+                //calls getcount and inserts categoryList
                 getCount(it)
             },
                 {
