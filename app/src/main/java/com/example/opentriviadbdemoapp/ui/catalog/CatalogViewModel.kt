@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryComposite
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
-import com.example.opentriviadbdemoapp.data.model.QuizCategoryListResponse
 import com.example.opentriviadbdemoapp.data.repository.QuizRepository
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class CatalogViewModel(private val repository: QuizRepository) : ViewModel() {
 
@@ -20,48 +18,52 @@ class CatalogViewModel(private val repository: QuizRepository) : ViewModel() {
         MutableLiveData()
 
     fun getCategoryCount() {
-        var categoryList = QuizCategoryListResponse(mutableListOf())
-        val idList = mutableListOf<Int>()
-
-        viewModelDisposable.add(
-            repository.getCategory().toObservable().flatMap { categoryListResponse ->
-                categoryList = categoryListResponse
-
-                for (i in categoryListResponse.category.indices) {
-                    idList.add(categoryListResponse.category[i].categoryId)
+        repository.getCategory().toObservable().subscribeOn(Schedulers.io())
+            .flatMap { quizCategoryList -> Observable.just(quizCategoryList.category) }
+            .subscribe({
+                getCount(it)
+            },
+                {
+                    Log.d("getCategory", "onFailure")
                 }
+            )
+    }
 
-                Observable.fromIterable(idList.sorted()).flatMap { result ->
-                    repository.getCount(result).toObservable()
-                }.throttleLast(50, TimeUnit.MILLISECONDS)
+    private fun getCount(item: MutableList<QuizCategoryList>) {
+
+        val idList = item.map {
+            it.categoryId
+        }
+
+        Observable.fromIterable(idList)
+            .subscribeOn(Schedulers.io())
+            .flatMap { result ->
+                repository.getCount(result).toObservable()
             }
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .subscribe({ categoryNameList ->
+            .toList()
+            .subscribe({ categoryNameList ->
 
-                    val categoryById: Map<Int, QuizCategoryList> =
-                        categoryList.category.associateBy { it.categoryId }
+                val categoryById: Map<Int, QuizCategoryList> =
+                    item.associateBy { it.categoryId }
 
-                    //creates a new composite class combining the mapped categoryList and categoryCount ID and category count
-                    val merge = categoryNameList.filter {
-                        categoryById[it.categoryId] != null
-                    }.map { categoryCount ->
-                        categoryById[categoryCount.categoryId]?.let {
-                            QuizCategoryComposite(
-                                it.categoryName,
-                                categoryCount.categoryId,
-                                categoryCount.categoryCount
-                            )
-                        }
-                    }
-                    quizCategoryComposite.postValue(merge.filterNotNull().sortedBy {
-                        it.categoryId
-                    })
+                val merge = categoryNameList.filter {
+                    categoryById[it.categoryId] != null
 
-                }, {
-                    Log.d("getCategoryCount", "onFailure")
+                }.map { categoryCount ->
+                    QuizCategoryComposite(
+                        categoryById[categoryCount.categoryId]!!.categoryName,
+                        categoryCount.categoryId,
+                        categoryCount.categoryCount
+                    )
+                }
+                quizCategoryComposite.postValue(merge.sortedBy {
+                    it.categoryId
                 })
-        )
+            },
+                {
+                    Log.d("getCategoryCount", "onFailure")
+                }
+            )
     }
 
     override fun onCleared() {
