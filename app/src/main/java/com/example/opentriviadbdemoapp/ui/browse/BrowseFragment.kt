@@ -14,7 +14,7 @@ import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentBrowseBinding
 import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
-import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
+import com.example.opentriviadbdemoapp.ui.viewModel.BrowseViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -23,7 +23,7 @@ class BrowseFragment : Fragment() {
     private var fragment: FragmentBrowseBinding? = null
     private val binding get() = fragment!!
 
-    private val browseViewModel: QuizViewModel by viewModel()
+    private val browseViewModel: BrowseViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

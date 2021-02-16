@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentQuizBinding
-import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class QuizFragment : Fragment() {
@@ -19,7 +18,7 @@ class QuizFragment : Fragment() {
     private var fragment: FragmentQuizBinding? = null
     private val binding get() = fragment!!
 
-    private val QuizViewModel: QuizViewModel by viewModel()
+    private val quizViewModel: QuizViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,8 +30,8 @@ class QuizFragment : Fragment() {
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
-        QuizViewModel.getCategory()
-        QuizViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
+        quizViewModel.getCategory()
+        quizViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
             setDropMenuData(response.category)
         })
 

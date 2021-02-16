@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.databinding.FragmentCatalogBinding
 import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
-import com.example.opentriviadbdemoapp.ui.viewModel.QuizViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CatalogFragment : Fragment() {
@@ -19,7 +18,7 @@ class CatalogFragment : Fragment() {
     private var fragment: FragmentCatalogBinding? = null
     private val binding get() = fragment!!
 
-    private val catalogViewModel: QuizViewModel by viewModel()
+    private val catalogViewModel: CatalogViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

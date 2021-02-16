@@ -16,8 +16,7 @@ class RetrofitInstance {
     private val okHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(interceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-
+            .connectTimeout(60, TimeUnit.SECONDS)
 
     private val adapterFactory =
         retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io())
