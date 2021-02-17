@@ -28,22 +28,24 @@ class QuizDataSource(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<QuizQuestion>
     ) {
-        val position = params.requestedInitialKey ?: FIRST_ITEMS
-        val request = quizApi.getQuizQuestion(category, position)
+        val items = params.requestedInitialKey ?: FIRST_ITEMS
+        val request = quizApi.getQuizQuestion(category, items)
+
 
         try {
-            request
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        callback.onResult(it.responseResult)
-                    },
-                    {
-                        val error = NetworkState.error("Unable to load quiz")
-                        networkState.postValue(error)
-                        initialLoad.postValue(error)
-                    })
-
+            compositeDisposable.add(
+                request
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        {
+                            callback.onResult(it.responseResult)
+                        },
+                        {
+                            val error = NetworkState.error("Unable to load quiz")
+                            networkState.postValue(error)
+                            initialLoad.postValue(error)
+                        })
+            )
         } catch (exception: IOException) {
             retry = {
                 loadInitial(params, callback)
@@ -68,15 +70,21 @@ class QuizDataSource(
                 .subscribeOn(Schedulers.io())
                 .map { quizQuestion ->
                     if (quizQuestion.responseResult.size >= params.key) {
-                        quizApi.getQuizQuestion(category, params.key + FIRST_ITEMS)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                callback.onResult(it.responseResult)
-                            }, {
-                                val error = NetworkState.error("Unable to load quiz")
-                                networkState.postValue(error)
-                                initialLoad.postValue(error)
-                            })
+                        compositeDisposable.add(
+                            quizApi.getQuizQuestion(
+                                category,
+                                params.key + FIRST_ITEMS
+                            )
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({
+                                    callback.onResult(it.responseResult)
+                                }, {
+                                    val error = NetworkState.error("Unable to load quiz")
+                                    networkState.postValue(error)
+                                    initialLoad.postValue(error)
+                                })
+                        )
+
                     }
                 }
         } catch (exception: IOException) {
