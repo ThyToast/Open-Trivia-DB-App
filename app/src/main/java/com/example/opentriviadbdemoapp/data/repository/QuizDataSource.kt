@@ -1,12 +1,15 @@
 package com.example.opentriviadbdemoapp.data.repository
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.ItemKeyedDataSource
-import com.example.opentriviadbdemoapp.data.api.QuizApi
+import androidx.paging.PageKeyedDataSource
+import com.example.opentriviadbdemoapp.data.api.RetrofitInstance
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.utils.NetworkState
 import com.example.opentriviadbdemoapp.utils.State
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.functions.Action
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
 import java.io.IOException
@@ -14,23 +17,21 @@ import java.io.IOException
 private const val FIRST_ITEMS = 20
 
 class QuizDataSource(
-    private val quizApi: QuizApi,
+    private val quizApi: RetrofitInstance,
     private val category: Int,
     private val compositeDisposable: CompositeDisposable
-) : ItemKeyedDataSource<Int, QuizQuestion>() {
+) : PageKeyedDataSource<Int, QuizQuestion>() {
 
     val networkState = MutableLiveData<NetworkState>()
     val initialLoad = MutableLiveData<NetworkState>()
-    private var retry: (() -> Any)? = null
-
+    private var retryCompletable: Completable? = null
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<QuizQuestion>
+        callback: LoadInitialCallback<Int, QuizQuestion>
     ) {
-        val items = params.requestedInitialKey ?: FIRST_ITEMS
-        val request = quizApi.getQuizQuestion(category, items)
-
+        val items = params.requestedLoadSize
+        val request = quizApi.createApi().getQuizQuestion(category, items)
 
         try {
             compositeDisposable.add(
@@ -38,7 +39,10 @@ class QuizDataSource(
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                         {
-                            callback.onResult(it.responseResult)
+                            callback.onResult(it.responseResult, null, FIRST_ITEMS)
+                            networkState.postValue(NetworkState(State.DONE))
+                            initialLoad.postValue(NetworkState(State.DONE))
+
                         },
                         {
                             val error = NetworkState.error("Unable to load quiz")
@@ -47,9 +51,7 @@ class QuizDataSource(
                         })
             )
         } catch (exception: IOException) {
-            retry = {
-                loadInitial(params, callback)
-            }
+            setRetry { loadInitial(params, callback) }
             val error = NetworkState.error(exception.message ?: "IOException Error")
             networkState.postValue(error)
             initialLoad.postValue(error)
@@ -61,36 +63,35 @@ class QuizDataSource(
         }
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<QuizQuestion>) {
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, QuizQuestion>) {
+
+    }
+
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, QuizQuestion>) {
         networkState.postValue(NetworkState(State.LOADING))
 
         try {
             quizApi
-                .getQuizQuestion(params.key, category)
+                .createApi().getQuizQuestion(params.key, category)
                 .subscribeOn(Schedulers.io())
                 .map { quizQuestion ->
                     if (quizQuestion.responseResult.size >= params.key) {
                         compositeDisposable.add(
-                            quizApi.getQuizQuestion(
-                                category,
-                                params.key + FIRST_ITEMS
-                            )
+                            quizApi.createApi().getQuizQuestion(category, params.requestedLoadSize)
                                 .subscribeOn(Schedulers.io())
                                 .subscribe({
-                                    callback.onResult(it.responseResult)
+                                    callback.onResult(it.responseResult, params.key + FIRST_ITEMS)
+                                    networkState.postValue(NetworkState(State.DONE))
                                 }, {
                                     val error = NetworkState.error("Unable to load quiz")
                                     networkState.postValue(error)
                                     initialLoad.postValue(error)
                                 })
                         )
-
                     }
                 }
         } catch (exception: IOException) {
-            retry = {
-                loadAfter(params, callback)
-            }
+            setRetry { loadAfter(params, callback) }
 
             val error = NetworkState.error(exception.message ?: "IOException Error")
             networkState.postValue(error)
@@ -104,13 +105,18 @@ class QuizDataSource(
         }
     }
 
-
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<QuizQuestion>) {
-
+    fun retry() {
+        if (retryCompletable != null) {
+            compositeDisposable.add(
+                retryCompletable!!
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            )
+        }
     }
 
-    override fun getKey(item: QuizQuestion): Int {
-        return FIRST_ITEMS
+    private fun setRetry(action: Action?) {
+        retryCompletable = if (action == null) null else Completable.fromAction(action)
     }
-
 }

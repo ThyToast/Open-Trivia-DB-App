@@ -1,24 +1,25 @@
 package com.example.opentriviadbdemoapp.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.paging.toLiveData
-import com.example.opentriviadbdemoapp.data.api.QuizApi
+import com.example.opentriviadbdemoapp.data.api.RetrofitInstance
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
-import com.example.opentriviadbdemoapp.data.model.Result
+import com.example.opentriviadbdemoapp.utils.NetworkState
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class QuizItemListRepository(private val quizApi: QuizApi) {
+class QuizItemListRepository(private val retrofitInstance: RetrofitInstance) {
 
-    lateinit var quizItemList: LiveData<List<QuizQuestion>>
+    lateinit var quizPagedList: LiveData<PagedList<QuizQuestion>>
     lateinit var quizDatasourceFactory: QuizDataSourceFactory
 
     fun getQuizItemList(
         compositeDisposable: CompositeDisposable,
         category: Int
-    ): com.example.opentriviadbdemoapp.data.model.Result<QuizQuestion> {
-        quizDatasourceFactory = QuizDataSourceFactory(quizApi, category, compositeDisposable)
+    ): LiveData<PagedList<QuizQuestion>> {
+        quizDatasourceFactory =
+            QuizDataSourceFactory(retrofitInstance, category, compositeDisposable)
 
         val config = PagedList
             .Config.Builder()
@@ -27,20 +28,13 @@ class QuizItemListRepository(private val quizApi: QuizApi) {
             .setInitialLoadSizeHint(25)
             .build()
 
-            return Result(
-                pagedList = quizDatasourceFactory.toLiveData(config),
-                networkState = quizDatasourceFactory.quizLiveDataSource.switchMap {
-                    it.networkState
-                },
-                retry = {},
-                refresh = { quizDatasourceFactory.quizLiveDataSource.value?.invalidate() },
-                refreshState = quizDatasourceFactory.quizLiveDataSource.switchMap {
-                    it.initialLoad
-                }
+        quizPagedList = LivePagedListBuilder(quizDatasourceFactory, config).build()
+        return quizPagedList
+    }
 
-
-            )
-
-
+    fun getNetworkState(): LiveData<NetworkState> {
+        return Transformations.switchMap<QuizDataSource, NetworkState>(
+            quizDatasourceFactory.quizLiveDataSource, QuizDataSource::networkState
+        )
     }
 }
