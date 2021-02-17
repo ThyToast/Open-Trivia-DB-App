@@ -15,6 +15,5 @@ class MainApplication : Application() {
             androidContext(this@MainApplication)
             modules(listOf(viewModelModule))
         }
-
     }
 }
