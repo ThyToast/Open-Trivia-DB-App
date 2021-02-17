@@ -1,25 +1,24 @@
 package com.example.opentriviadbdemoapp.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
+import androidx.lifecycle.switchMap
 import androidx.paging.PagedList
-import com.example.opentriviadbdemoapp.data.api.RetrofitInstance
+import androidx.paging.toLiveData
+import com.example.opentriviadbdemoapp.data.api.QuizApi
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
-import com.example.opentriviadbdemoapp.utils.NetworkState
+import com.example.opentriviadbdemoapp.data.model.Result
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class QuizItemListRepository(private val retrofitInstance: RetrofitInstance) {
+class QuizItemListRepository(private val quizApi: QuizApi) {
 
-    lateinit var quizPagedList: LiveData<PagedList<QuizQuestion>>
+    lateinit var quizItemList: LiveData<List<QuizQuestion>>
     lateinit var quizDatasourceFactory: QuizDataSourceFactory
 
     fun getQuizItemList(
         compositeDisposable: CompositeDisposable,
         category: Int
-    ): LiveData<PagedList<QuizQuestion>> {
-        quizDatasourceFactory =
-            QuizDataSourceFactory(retrofitInstance, category, compositeDisposable)
+    ): com.example.opentriviadbdemoapp.data.model.Result<QuizQuestion> {
+        quizDatasourceFactory = QuizDataSourceFactory(quizApi, category, compositeDisposable)
 
         val config = PagedList
             .Config.Builder()
@@ -28,13 +27,20 @@ class QuizItemListRepository(private val retrofitInstance: RetrofitInstance) {
             .setInitialLoadSizeHint(25)
             .build()
 
-        quizPagedList = LivePagedListBuilder(quizDatasourceFactory, config).build()
-        return quizPagedList
-    }
+            return Result(
+                pagedList = quizDatasourceFactory.toLiveData(config),
+                networkState = quizDatasourceFactory.quizLiveDataSource.switchMap {
+                    it.networkState
+                },
+                retry = {},
+                refresh = { quizDatasourceFactory.quizLiveDataSource.value?.invalidate() },
+                refreshState = quizDatasourceFactory.quizLiveDataSource.switchMap {
+                    it.initialLoad
+                }
 
-    fun getNetworkState(): LiveData<NetworkState> {
-        return Transformations.switchMap(
-            quizDatasourceFactory.quizLiveDataSource, QuizDataSource::networkState
-        )
+
+            )
+
+
     }
 }
