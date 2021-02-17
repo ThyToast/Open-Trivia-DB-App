@@ -13,7 +13,7 @@ class QuizRepository(private val retrofitInstance: RetrofitInstance) {
         return retrofitInstance.createApi().getQuizCategory()
     }
 
-    fun getCount(category: Int): Flowable<QuizCategoryCountResponse> {
+    fun getCount(category: Int): Single<QuizCategoryCountResponse> {
         return retrofitInstance.createApi().getQuizCount(category)
     }
 
