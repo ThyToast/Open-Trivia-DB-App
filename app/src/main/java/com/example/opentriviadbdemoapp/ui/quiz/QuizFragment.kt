@@ -52,9 +52,8 @@ class QuizFragment : Fragment() {
 
     private fun setDropMenuData(items: List<QuizCategoryList>) {
         val dropMenu = binding.tvQuiz
-        val menuList = mutableListOf<String>()
-        for (i in items.indices) {
-            menuList.add(items[i].categoryName)
+        val menuList = items.map {
+            it.categoryName
         }
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
         dropMenu.setAdapter(adapter)

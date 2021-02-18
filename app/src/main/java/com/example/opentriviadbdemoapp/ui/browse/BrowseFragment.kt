@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.databinding.FragmentBrowseBinding
-import com.example.opentriviadbdemoapp.ui.adapter.BaseRecyclerAdapter
+import com.example.opentriviadbdemoapp.ui.adapter.PagedListAdapter
 import com.example.opentriviadbdemoapp.ui.viewModel.BrowseViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,28 +24,19 @@ class BrowseFragment : Fragment() {
     private val binding get() = fragment!!
 
     private val browseViewModel: BrowseViewModel by viewModel()
+    private val listViewModel: BrowseDataViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         setHasOptionsMenu(true)
-
         fragment = FragmentBrowseBinding.inflate(inflater, container, false)
-        val recyclerView = binding.rvBrowse
-        val recyclerAdapter = BaseRecyclerAdapter()
-        recyclerView.adapter = recyclerAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
         browseViewModel.getCategory()
-        browseViewModel.quizQuestionResponse.observe(viewLifecycleOwner, { response ->
-            recyclerAdapter.setData(response.responseResult)
-        })
-
         browseViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
             setDropMenuData(response.category)
         })
@@ -54,15 +45,25 @@ class BrowseFragment : Fragment() {
     }
 
     private fun setDropMenuData(items: List<QuizCategoryList>) {
+        val recyclerView = binding.rvBrowse
+        val recyclerAdapter = PagedListAdapter()
+        recyclerView.adapter = recyclerAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         val dropMenu = binding.tvBrowse
-        val menuList = mutableListOf<String>()
-        for (i in items.indices) {
-            menuList.add(items[i].categoryName)
+        val menuList = items.map {
+            it.categoryName
         }
+
         val adapter = ArrayAdapter(requireContext(), R.layout.options_menu, menuList)
         dropMenu.setAdapter(adapter)
+
         dropMenu.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i: Int, l: Long ->
-            browseViewModel.getQuiz(10, items[i].categoryId)
+
+            listViewModel.getQuizItemList(items[i].categoryId)
+                .observe(viewLifecycleOwner, { response ->
+                    recyclerAdapter.submitList(response)
+                })
         }
     }
 
@@ -71,7 +72,6 @@ class BrowseFragment : Fragment() {
             findNavController().navigate(R.id.action_nav_browse_to_settingsFragment)
             true
         }
-
         else -> {
             super.onOptionsItemSelected(item)
         }

@@ -31,7 +31,7 @@ class QuizDataSource(
         callback: LoadInitialCallback<Int, QuizQuestion>
     ) {
         val items = params.requestedLoadSize
-        val request = quizApi.createApi().getQuizQuestion(category, items)
+        val request = quizApi.createApi().getQuizQuestion(items, category)
 
         try {
             compositeDisposable.add(
@@ -74,22 +74,15 @@ class QuizDataSource(
             quizApi
                 .createApi().getQuizQuestion(params.key, category)
                 .subscribeOn(Schedulers.io())
-                .map { quizQuestion ->
-                    if (quizQuestion.responseResult.size >= params.key) {
-                        compositeDisposable.add(
-                            quizApi.createApi().getQuizQuestion(category, params.requestedLoadSize)
-                                .subscribeOn(Schedulers.io())
-                                .subscribe({
-                                    callback.onResult(it.responseResult, params.key + FIRST_ITEMS)
-                                    networkState.postValue(NetworkState(State.DONE))
-                                }, {
-                                    val error = NetworkState.error("Unable to load quiz")
-                                    networkState.postValue(error)
-                                    initialLoad.postValue(error)
-                                })
-                        )
-                    }
-                }
+                .subscribe({
+                    callback.onResult(it.responseResult, params.key + FIRST_ITEMS)
+                    networkState.postValue(NetworkState(State.DONE))
+                }, {
+                    val error = NetworkState.error("Unable to load quiz")
+                    networkState.postValue(error)
+                    initialLoad.postValue(error)
+                })
+
         } catch (exception: IOException) {
             setRetry { loadAfter(params, callback) }
 
