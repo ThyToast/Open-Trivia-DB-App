@@ -22,4 +22,9 @@ interface QuizApi {
     fun getQuizCount(
         @Query("category") category: Int
     ): Single<QuizCategoryCountResponse>
+
+    @GET("api_count.php")
+    fun getToken(
+        @Query("category") category: Int
+    ): Single<QuizCategoryCountResponse>
 }

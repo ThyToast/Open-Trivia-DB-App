@@ -71,17 +71,19 @@ class QuizDataSource(
         networkState.postValue(NetworkState(State.LOADING))
 
         try {
-            quizApi
-                .createApi().getQuizQuestion(params.key, category)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    callback.onResult(it.responseResult, params.key + FIRST_ITEMS)
-                    networkState.postValue(NetworkState(State.DONE))
-                }, {
-                    val error = NetworkState.error("Unable to load quiz")
-                    networkState.postValue(error)
-                    initialLoad.postValue(error)
-                })
+            compositeDisposable.add(
+                quizApi
+                    .createApi().getQuizQuestion(params.key, category)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
+                        callback.onResult(it.responseResult, params.key + FIRST_ITEMS)
+                        networkState.postValue(NetworkState(State.DONE))
+                    }, {
+                        val error = NetworkState.error("Unable to load quiz")
+                        networkState.postValue(error)
+                        initialLoad.postValue(error)
+                    })
+            )
 
         } catch (exception: IOException) {
             setRetry { loadAfter(params, callback) }

@@ -15,4 +15,6 @@
     <string name="easy">Easy: %1$d</string>
     <string name="medium">Medium: %1$d</string>
     <string name="hard">Hard: %1$d</string>
+    <string name="title">Title</string>
+    <string name="difficulty">Difficulty</string>
 </resources>

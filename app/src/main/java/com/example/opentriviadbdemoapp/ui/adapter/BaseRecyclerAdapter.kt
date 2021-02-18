@@ -110,8 +110,6 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 }
 
-//TODO(when implementing pagination, use try/catch to prevent crashing from timeout exception https://stackoverflow.com/questions/36455656/java-net-sockettimeoutexception-timeout)
-
 
 
 
