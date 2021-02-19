@@ -1,7 +1,9 @@
 package com.example.opentriviadbdemoapp.data.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
 data class QuizQuestionResponse(
@@ -12,6 +14,7 @@ data class QuizQuestionResponse(
 )
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class QuizQuestion(
     @Json(name = "category")
     val quizCategory: String,
@@ -25,4 +28,4 @@ data class QuizQuestion(
     val quizCorrectAnswer: String,
     @Json(name = "incorrect_answers")
     val quizWrongAnswer: List<String>,
-)
+) : Parcelable

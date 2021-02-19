@@ -5,17 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.opentriviadbdemoapp.R
+import androidx.navigation.fragment.navArgs
+import com.example.opentriviadbdemoapp.databinding.FragmentQuizGameBinding
 
 
 class QuizGameFragment : Fragment() {
 
+    private var fragment: FragmentQuizGameBinding? = null
+    private val binding get() = fragment!!
+
+    private val args: QuizGameFragmentArgs by navArgs()
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_quiz_game, container, false)
+        fragment = FragmentQuizGameBinding.inflate(inflater, container, false)
+        val quizQuestion = args.quizQuestion
+
+
+
+
+        return binding.root
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fragment = null
     }
 
 }

@@ -39,12 +39,20 @@
         <action
             android:id="@+id/action_nav_quiz_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_nav_quiz_to_quizGameFragment"
+            app:destination="@id/quizGameFragment"
+            app:popUpTo="@id/quizGameFragment" />
+        <action
+            android:id="@+id/action_nav_quiz_to_quizResultsFragment"
+            app:destination="@id/quizResultsFragment"
+            app:popUpTo="@id/quizResultsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.opentriviadbdemoapp.ui.preference.SettingsFragment"
-        android:label="Settings" >
+        android:label="Settings">
         <action
             android:id="@+id/action_settingsFragment_to_nav_browse"
             app:destination="@id/nav_browse" />
@@ -55,6 +63,27 @@
             android:id="@+id/action_settingsFragment_to_nav_catalog"
             app:destination="@id/nav_catalog"
             app:popUpTo="@id/nav_catalog" />
+    </fragment>
+    <fragment
+        android:id="@+id/quizGameFragment"
+        android:name="com.example.opentriviadbdemoapp.ui.quiz.game.QuizGameFragment"
+        android:label="fragment_quiz_game"
+        tools:layout="@layout/fragment_quiz_game">
+        <action
+            android:id="@+id/action_quizGameFragment_to_nav_quiz2"
+            app:destination="@id/nav_quiz" />
+        <argument
+            android:name="quizQuestion"
+            app:argType="com.example.opentriviadbdemoapp.data.model.QuizQuestion[]" />
+    </fragment>
+    <fragment
+        android:id="@+id/quizResultsFragment"
+        android:name="com.example.opentriviadbdemoapp.ui.quiz.results.QuizResultsFragment"
+        android:label="fragment_quiz_results"
+        tools:layout="@layout/fragment_quiz_results">
+        <action
+            android:id="@+id/action_quizResultsFragment_to_nav_quiz"
+            app:destination="@id/nav_quiz" />
     </fragment>
 
 </navigation>

@@ -16,7 +16,7 @@ class QuizViewModel(private val repository: QuizRepository) : ViewModel() {
     val quizQuestionResponse: MutableLiveData<QuizQuestionResponse> = MutableLiveData()
     val quizCategoryResponse: MutableLiveData<QuizCategoryListResponse> = MutableLiveData()
 
-    fun getQuiz(amount: Int, category: Int) {
+    fun getQuiz(amount: Int, category: Int? = null) {
         viewModelDisposable.add(repository.getQuiz(amount, category)
             .toObservable()
             .subscribeOn(Schedulers.io())
