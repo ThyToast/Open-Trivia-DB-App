@@ -1,6 +1,7 @@
 package com.example.opentriviadbdemoapp.ui.quiz
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.opentriviadbdemoapp.R
@@ -33,6 +35,13 @@ class QuizFragment : Fragment() {
         setHasOptionsMenu(true)
         fragment = FragmentQuizBinding.inflate(inflater, container, false)
         quizViewModel.getQuiz(10)
+        binding.btnQuizNext.isEnabled = false
+
+//        setFragmentResultListener("requestKey") { key, bundle ->
+//            val result = bundle.getString("name")
+//            Log.d("test", result.toString())
+//        }
+
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
@@ -43,6 +52,7 @@ class QuizFragment : Fragment() {
 
         quizViewModel.quizQuestionResponse.observe(viewLifecycleOwner, { response ->
             quizQuestion = response.responseResult.toTypedArray()
+            binding.btnQuizNext.isEnabled = true
         })
 
         binding.btnQuizNext.setOnClickListener { v ->

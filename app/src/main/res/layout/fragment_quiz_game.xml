@@ -6,19 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.quiz.game.QuizGameFragment">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_quiz_timer"
+    <Chronometer
+        android:id="@+id/view_timer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:drawableEnd="@drawable/ic_timer"
         android:drawablePadding="10dp"
-        android:gravity="end"
-        android:text="1:00"
+        android:countDown="true"
+        android:drawableEnd="@drawable/ic_timer"
+        android:drawableTint="@color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"  />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_quiz"
@@ -29,7 +29,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_quiz_timer">
+        app:layout_constraintTop_toBottomOf="@+id/view_timer">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -56,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:clickable="false"
                 android:text="@string/difficulty"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -95,12 +96,12 @@
         app:layout_constraintTop_toBottomOf="@+id/cv_quiz">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_question_1"
+            android:id="@+id/tv_answer_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:text="Question 1" />
+            android:text="Answer 1" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -116,12 +117,12 @@
         app:layout_constraintTop_toBottomOf="@+id/materialCardView1">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_question_2"
+            android:id="@+id/tv_answer_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:text="Question 2" />
+            android:text="Answer 2" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -137,12 +138,12 @@
         app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_question_3"
+            android:id="@+id/tv_answer_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:text="Question 3" />
+            android:text="Answer 3" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -158,12 +159,12 @@
         app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_question_4"
+            android:id="@+id/tv_answer_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:text="Question 4" />
+            android:text="Answer 4" />
 
     </com.google.android.material.card.MaterialCardView>
 

@@ -33,11 +33,13 @@ class BrowseFragment : Fragment() {
     ): View {
         setHasOptionsMenu(true)
         fragment = FragmentBrowseBinding.inflate(inflater, container, false)
+        binding.tvBrowse.isEnabled = false
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
         browseViewModel.getCategory()
         browseViewModel.quizCategoryResponse.observe(viewLifecycleOwner, { response ->
+            binding.tvBrowse.isEnabled = true
             setDropMenuData(response.category)
         })
 

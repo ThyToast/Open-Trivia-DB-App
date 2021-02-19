@@ -70,7 +70,7 @@
         android:label="fragment_quiz_game"
         tools:layout="@layout/fragment_quiz_game">
         <action
-            android:id="@+id/action_quizGameFragment_to_nav_quiz2"
+            android:id="@+id/action_quizGameFragment_to_nav_quiz"
             app:destination="@id/nav_quiz" />
         <argument
             android:name="quizQuestion"
