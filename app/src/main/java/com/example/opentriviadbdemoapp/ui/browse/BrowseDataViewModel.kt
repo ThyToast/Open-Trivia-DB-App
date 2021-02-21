@@ -12,10 +12,6 @@ class BrowseDataViewModel(private val repository: QuizItemListRepository) : View
 
     private val viewModelDisposable: CompositeDisposable = CompositeDisposable()
 
-    val quizPagedList: LiveData<PagedList<QuizQuestion>> by lazy {
-        repository.getQuizItemList(viewModelDisposable, 1)
-    }
-
     fun getQuizItemList(category: Int): LiveData<PagedList<QuizQuestion>> {
         return repository.getQuizItemList(viewModelDisposable, category)
     }
@@ -28,6 +24,5 @@ class BrowseDataViewModel(private val repository: QuizItemListRepository) : View
         super.onCleared()
         viewModelDisposable.dispose()
     }
-
 
 }

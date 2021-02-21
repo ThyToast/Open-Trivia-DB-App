@@ -12,27 +12,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class BrowseViewModel(private val repository: QuizRepository) : ViewModel() {
 
     private var viewModelDisposable: CompositeDisposable = CompositeDisposable()
-
-    val quizQuestionResponse: MutableLiveData<QuizQuestionResponse> = MutableLiveData()
     val quizCategoryResponse: MutableLiveData<QuizCategoryListResponse> = MutableLiveData()
-
-    fun getQuiz(amount: Int, category: Int) {
-        viewModelDisposable.add(repository.getQuiz(amount, category)
-            .toObservable()
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    //onSuccess
-                    quizQuestionResponse.postValue(it)
-                    Log.d("getQuiz", "Success")
-
-                }, {
-                    //onFailure
-                    Log.d("getQuiz", "onFailure")
-
-                }
-            ))
-    }
 
     fun getCategory() {
         viewModelDisposable.add(

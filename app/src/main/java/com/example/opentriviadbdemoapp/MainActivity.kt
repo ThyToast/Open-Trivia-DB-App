@@ -1,5 +1,6 @@
 package com.example.opentriviadbdemoapp
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.example.opentriviadbdemoapp.databinding.ActivityMainBinding
-import com.example.opentriviadbdemoapp.ui.preference.LiveSharedPreferences
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -27,17 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val liveSharedPreferences = LiveSharedPreferences(preferences)
-
-        //preferences observable to toggle or disable night mode
-        liveSharedPreferences.getBoolean("dark_mode", false).observe(this, { isDarkMode ->
-            if (isDarkMode) {
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
-            }
-        })
 
         setContentView(binding.root)
         val navView: BottomNavigationView = binding.navView

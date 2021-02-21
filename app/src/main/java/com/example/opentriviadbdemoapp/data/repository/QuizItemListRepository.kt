@@ -24,7 +24,6 @@ class QuizItemListRepository(private val retrofitInstance: RetrofitInstance) {
         val config = PagedList
             .Config.Builder()
             .setPageSize(20)
-            .setEnablePlaceholders(false)
             .setInitialLoadSizeHint(25)
             .build()
 
