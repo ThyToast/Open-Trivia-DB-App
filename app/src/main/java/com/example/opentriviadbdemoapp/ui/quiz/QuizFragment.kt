@@ -17,6 +17,7 @@ import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.databinding.FragmentQuizBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class QuizFragment : Fragment() {
@@ -35,13 +36,12 @@ class QuizFragment : Fragment() {
         setHasOptionsMenu(true)
         fragment = FragmentQuizBinding.inflate(inflater, container, false)
         quizViewModel.getQuiz(10)
+
         binding.btnQuizNext.isEnabled = false
+        setFragmentResultListener("quizResult") { key, bundle ->
+            val result = bundle.getInt("score")
 
-//        setFragmentResultListener("requestKey") { key, bundle ->
-//            val result = bundle.getString("name")
-//            Log.d("test", result.toString())
-//        }
-
+        }
 
         //retrieve the rest of the list from https://opentdb.com/api_category.php
         //this populates the drop down menu with items
@@ -91,6 +91,5 @@ class QuizFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         fragment = null
-
     }
 }

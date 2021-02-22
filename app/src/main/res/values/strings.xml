@@ -17,4 +17,9 @@
     <string name="hard">Hard: %1$d</string>
     <string name="title">Title</string>
     <string name="difficulty">Difficulty</string>
+    <string name="result_title">Quiz Result</string>
+    <string name="result_message">Your score is %1$s/10</string>
+    <string name="result_button_show">Show Result</string>
+    <string name="result_button_close">Close</string>
+
 </resources>

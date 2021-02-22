@@ -43,10 +43,6 @@
             android:id="@+id/action_nav_quiz_to_quizGameFragment"
             app:destination="@id/quizGameFragment"
             app:popUpTo="@id/quizGameFragment" />
-        <action
-            android:id="@+id/action_nav_quiz_to_quizResultsFragment"
-            app:destination="@id/quizResultsFragment"
-            app:popUpTo="@id/quizResultsFragment" />
     </fragment>
 
     <fragment
@@ -67,7 +63,7 @@
     <fragment
         android:id="@+id/quizGameFragment"
         android:name="com.example.opentriviadbdemoapp.ui.quiz.game.QuizGameFragment"
-        android:label="fragment_quiz_game"
+        android:label="Quiz Game"
         tools:layout="@layout/fragment_quiz_game">
         <action
             android:id="@+id/action_quizGameFragment_to_nav_quiz"
@@ -75,15 +71,20 @@
         <argument
             android:name="quizQuestion"
             app:argType="com.example.opentriviadbdemoapp.data.model.QuizQuestion[]" />
+        <action
+            android:id="@+id/action_quizGameFragment_to_quizResultsFragment"
+            app:destination="@id/quizResultsFragment"
+            app:popUpTo="@id/quizResultsFragment" />
     </fragment>
     <fragment
         android:id="@+id/quizResultsFragment"
         android:name="com.example.opentriviadbdemoapp.ui.quiz.results.QuizResultsFragment"
-        android:label="fragment_quiz_results"
+        android:label="Quiz Results"
         tools:layout="@layout/fragment_quiz_results">
         <action
             android:id="@+id/action_quizResultsFragment_to_nav_quiz"
-            app:destination="@id/nav_quiz" />
+            app:destination="@id/nav_quiz"
+            app:popUpTo="@id/nav_quiz" />
     </fragment>
 
 </navigation>

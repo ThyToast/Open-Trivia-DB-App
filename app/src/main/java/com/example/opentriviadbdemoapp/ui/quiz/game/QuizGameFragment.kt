@@ -6,17 +6,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
 import com.example.opentriviadbdemoapp.databinding.FragmentQuizGameBinding
+import com.example.opentriviadbdemoapp.ui.quiz.QuizViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class QuizGameFragment : Fragment() {
+
+    private val quizViewModel: QuizViewModel by viewModel()
 
     private var fragment: FragmentQuizGameBinding? = null
     private val binding get() = fragment!!
@@ -30,6 +38,8 @@ class QuizGameFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         fragment = FragmentQuizGameBinding.inflate(inflater, container, false)
+        score = 0
+
         binding.viewTimer.base = SystemClock.elapsedRealtime() + 60000
         binding.viewTimer.start()
 
@@ -37,33 +47,39 @@ class QuizGameFragment : Fragment() {
             if (position <= 9) {
                 getQuestion(position)
             } else {
-                //goes back to quiz fragment
-//                setFragmentResult("requestKey", bundleOf("name" to "test"))
-                //sends data back
-
-                val action = QuizGameFragmentDirections.actionQuizGameFragmentToNavQuiz()
-                Navigation.findNavController(binding.root).navigate(action)
+                exitQuiz()
             }
         })
+
+        binding.viewTimer.setOnChronometerTickListener {
+            if (it.text.equals("00:00")) {
+                exitQuiz()
+            }
+        }
         return binding.root
     }
 
     private fun getQuestion(position: Int) {
         val quizLayout = args.quizQuestion[position]
         binding.apply {
-            val convertText =
+            val convertQuestion =
                 HtmlCompat.fromHtml(quizLayout.quizQuestion, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-            tvQuizQuestion.text = convertText
+            tvQuizQuestion.text = convertQuestion
             tvQuizCategory.text = quizLayout.quizCategory
             chQuizDifficulty.text = quizLayout.quizDifficulty
             tvQuizCount.text = (position + 1).toString()
 
-            //randomizes the questions
+            //randomizes the questions and converts it to UTF-8 format
             val quizQuestionRandom =
                 (quizLayout.quizWrongAnswer + quizLayout.quizCorrectAnswer).shuffled()
-            tvAnswer1.text = quizQuestionRandom[0]
-            tvAnswer2.text = quizQuestionRandom[1]
+
+            val quizQuestionConvert = quizQuestionRandom.map {
+                HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            }
+
+            tvAnswer1.text = quizQuestionConvert[0]
+            tvAnswer2.text = quizQuestionConvert[1]
 
             if (quizLayout.quizType != "multiple") {
                 tvAnswer3.isVisible = false
@@ -71,8 +87,8 @@ class QuizGameFragment : Fragment() {
             } else {
                 tvAnswer3.isVisible = true
                 tvAnswer4.isVisible = true
-                tvAnswer3.text = quizQuestionRandom[2]
-                tvAnswer4.text = quizQuestionRandom[3]
+                tvAnswer3.text = quizQuestionConvert[2]
+                tvAnswer4.text = quizQuestionConvert[3]
             }
         }
         cardViewButton(quizLayout)
@@ -106,6 +122,19 @@ class QuizGameFragment : Fragment() {
             score += 1
         }
         Log.d("isCorrect", score.toString())
+    }
+
+    private fun exitQuiz() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.result_title))
+            .setMessage(resources.getString(R.string.result_message, score.toString()))
+            .setNeutralButton(resources.getString(R.string.result_button_close)) { dialog, which ->
+
+            }
+            .show()
+
+        val action = QuizGameFragmentDirections.actionQuizGameFragmentToNavQuiz()
+        Navigation.findNavController(binding.root).navigate(action)
     }
 
     override fun onDestroy() {
