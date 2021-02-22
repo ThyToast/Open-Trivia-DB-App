@@ -1,14 +1,19 @@
 package com.example.opentriviadbdemoapp.ui.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryComposite
+import com.example.opentriviadbdemoapp.data.model.QuizCategoryList
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
+import com.example.opentriviadbdemoapp.data.model.QuizResult
 import com.example.opentriviadbdemoapp.databinding.ItemBrowseCardviewBinding
 import com.example.opentriviadbdemoapp.databinding.ItemCatalogCardviewBinding
+import com.example.opentriviadbdemoapp.databinding.ItemQuizResultCardviewBinding
 
 
 class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -17,10 +22,11 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_BROWSE = 0
         private const val TYPE_CATALOG = 1
+        private const val TYPE_RESULT = 2
     }
 
 
-    class BrowseViewHolder(binding: ItemBrowseCardviewBinding) :
+    inner class BrowseViewHolder(binding: ItemBrowseCardviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvQuestion = binding.tvQuestion
         val chDifficulty = binding.chDifficulty
@@ -34,6 +40,13 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val tvCategoryMedium = binding.tvCatalogCategoryMedium
         val tvCategoryHard = binding.tvCatalogCategoryHard
         val tvTotal = binding.tvCatalogTotal
+    }
+
+    inner class ResultViewHolder(binding: ItemQuizResultCardviewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val tvResultQuestion = binding.tvResultQuestion
+        val tvResultAnswer1 = binding.tvResultAnswer1
+        val tvResultAnswer2 = binding.tvResultAnswer2
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -50,6 +63,15 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_CATALOG -> {
                 return CatalogViewHolder(
                     ItemCatalogCardviewBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            TYPE_RESULT -> {
+                return ResultViewHolder(
+                    ItemQuizResultCardviewBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -87,15 +109,34 @@ class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 resources.getString(R.string.hard, categoryCount.hardQuestion)
 
             holder.tvTotal.text = categoryCount.totalQuestion.toString()
+        } else if (holder is ResultViewHolder && item is QuizResult) {
+            val convertText =
+                HtmlCompat.fromHtml(
+                    item.quizQuestion.quizQuestion,
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            holder.tvResultQuestion.text = convertText
+            holder.tvResultAnswer1.text = item.quizChosenAnswer
 
+            if (item.quizChosenAnswer == item.quizQuestion.quizCorrectAnswer) {
+                holder.tvResultAnswer1.setTextColor(Color.GREEN)
+                holder.tvResultAnswer2.isVisible = false
+            } else {
+                holder.tvResultAnswer1.setTextColor(Color.RED)
+                holder.tvResultAnswer2.isVisible = true
+                holder.tvResultAnswer2.text = item.quizQuestion.quizCorrectAnswer
+            }
         }
     }
+
 
     override fun getItemViewType(position: Int): Int {
         return if (list[0] is QuizQuestion) {
             TYPE_BROWSE
-        } else {
+        } else if (list[0] is QuizCategoryList) {
             TYPE_CATALOG
+        } else {
+            TYPE_RESULT
         }
     }
 

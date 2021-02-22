@@ -6,30 +6,27 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.opentriviadbdemoapp.R
 import com.example.opentriviadbdemoapp.data.model.QuizQuestion
+import com.example.opentriviadbdemoapp.data.model.QuizResult
 import com.example.opentriviadbdemoapp.databinding.FragmentQuizGameBinding
-import com.example.opentriviadbdemoapp.ui.quiz.QuizViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class QuizGameFragment : Fragment() {
-
-    private val quizViewModel: QuizViewModel by viewModel()
 
     private var fragment: FragmentQuizGameBinding? = null
     private val binding get() = fragment!!
     private val args: QuizGameFragmentArgs by navArgs()
     private val position: MutableLiveData<Int> = MutableLiveData(0)
+    private val quizResult: MutableList<QuizResult> = mutableListOf()
+
     private var score = 0
 
     override fun onCreateView(
@@ -121,6 +118,9 @@ class QuizGameFragment : Fragment() {
         if (answer == quizQuestion.quizCorrectAnswer) {
             score += 1
         }
+        quizResult.add(
+            QuizResult(quizQuestion, answer)
+        )
         Log.d("isCorrect", score.toString())
     }
 
@@ -129,12 +129,16 @@ class QuizGameFragment : Fragment() {
             .setTitle(resources.getString(R.string.result_title))
             .setMessage(resources.getString(R.string.result_message, score.toString()))
             .setNeutralButton(resources.getString(R.string.result_button_close)) { dialog, which ->
-
+                val action = QuizGameFragmentDirections.actionQuizGameFragmentToNavQuiz()
+                Navigation.findNavController(binding.root).navigate(action)
+            }
+            .setPositiveButton(resources.getString(R.string.result_button_show)) { dialog, which ->
+                val `class`: Array<QuizResult> = quizResult.toTypedArray()
+                val action =
+                    QuizGameFragmentDirections.actionQuizGameFragmentToQuizResultsFragment(`class`)
+                Navigation.findNavController(binding.root).navigate(action)
             }
             .show()
-
-        val action = QuizGameFragmentDirections.actionQuizGameFragmentToNavQuiz()
-        Navigation.findNavController(binding.root).navigate(action)
     }
 
     override fun onDestroy() {

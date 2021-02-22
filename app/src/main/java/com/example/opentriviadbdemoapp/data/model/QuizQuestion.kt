@@ -29,3 +29,10 @@ data class QuizQuestion(
     @Json(name = "incorrect_answers")
     val quizWrongAnswer: List<String>,
 ) : Parcelable
+
+@Parcelize
+data class QuizResult(
+    val quizQuestion: QuizQuestion,
+    val quizChosenAnswer:String
+) : Parcelable
+

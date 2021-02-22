@@ -85,6 +85,9 @@
             android:id="@+id/action_quizResultsFragment_to_nav_quiz"
             app:destination="@id/nav_quiz"
             app:popUpTo="@id/nav_quiz" />
+        <argument
+            android:name="quizResult"
+            app:argType="com.example.opentriviadbdemoapp.data.model.QuizResult[]" />
     </fragment>
 
 </navigation>
