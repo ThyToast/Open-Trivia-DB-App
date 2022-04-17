@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.opentriviadbdemoapp.data.model.QuizCategoryListResponse
-import com.example.opentriviadbdemoapp.data.model.QuizQuestionResponse
 import com.example.opentriviadbdemoapp.data.repository.QuizRepository
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers

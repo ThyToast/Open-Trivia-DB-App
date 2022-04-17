@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import com.example.opentriviadbdemoapp.di.DaggerAppComponent
 import com.example.opentriviadbdemoapp.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,7 +21,7 @@ class MainApplication : Application() {
         }
 
         toggleDarkMode()
-
+        DaggerAppComponent.builder().build().injectRetrofit(this)
     }
 
     private fun toggleDarkMode() {
